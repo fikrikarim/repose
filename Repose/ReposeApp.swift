@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct BreakerApp: App {
+struct ReposeApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

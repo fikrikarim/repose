@@ -25,7 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         timerManager = TimerManager()
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Breaker")
+        statusItem.button?.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Repose")
         statusItem.button?.imagePosition = .imageLeading
 
         buildMenu()
@@ -97,7 +97,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         menu.addItem(.separator())
 
-        let quitItem = NSMenuItem(title: "Quit Breaker", action: #selector(quitApp), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit Repose", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
 
@@ -122,7 +122,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func updateStatusText() {
         switch timerManager.state {
         case .idle:
-            statusMenuItem.title = "Breaker"
+            statusMenuItem.title = "Repose"
         case .working:
             statusMenuItem.title = "Next break in \(formatTime(timerManager.remainingSeconds))"
         case .onBreak:

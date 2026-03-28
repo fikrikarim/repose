@@ -50,7 +50,7 @@ class TimerManager: ObservableObject {
     var menuBarText: String {
         switch state {
         case .idle:
-            return "Breaker"
+            return "Repose"
         case .working:
             return formatTime(remainingSeconds)
         case .onBreak:

@@ -1,22 +1,22 @@
-name: Breaker
+name: Repose
 options:
-  bundleIdPrefix: com.breaker
+  bundleIdPrefix: com.repose
   deploymentTarget:
     macOS: "13.0"
   xcodeVersion: "15.0"
   minimumXcodeGenVersion: "2.0"
 
 targets:
-  Breaker:
+  Repose:
     type: application
     platform: macOS
     sources:
-      - Breaker
+      - Repose
     settings:
       base:
-        INFOPLIST_FILE: Breaker/Info.plist
-        CODE_SIGN_ENTITLEMENTS: Breaker/Breaker.entitlements
-        PRODUCT_BUNDLE_IDENTIFIER: com.breaker.app
+        INFOPLIST_FILE: Repose/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Repose/Repose.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.repose.app
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "5.9"

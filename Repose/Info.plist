@@ -5,9 +5,9 @@
     <key>LSUIElement</key>
     <true/>
     <key>CFBundleName</key>
-    <string>Breaker</string>
+    <string>Repose</string>
     <key>CFBundleDisplayName</key>
-    <string>Breaker</string>
+    <string>Repose</string>
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleVersion</key>
