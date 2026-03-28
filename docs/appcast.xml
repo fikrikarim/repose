@@ -1,8 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
         <title>Repose</title>
-        <description>Repose update feed</description>
-        <language>en</language>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Sat, 28 Mar 2026 14:45:21 +0700</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/fikrikarim/repose/releases/download/vCURRENT_PROJECT_VERSION:1/Repose.zip" length="1310054" type="application/octet-stream" sparkle:edSignature="DrW3ijGNer6GdeEOAsZ4meM1zdw2huXJiWsi2qqDtjtC2rU7t8lh1Dx5EpfC/UH16NSiG6wi6f04lxllXtJVAg=="/>
+        </item>
     </channel>
 </rss>
