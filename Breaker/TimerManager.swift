@@ -37,6 +37,16 @@ class TimerManager: ObservableObject {
         UserDefaults.standard.bool(forKey: "smartPauseEnabled")
     }
 
+    var menuBarIcon: String {
+        switch state {
+        case .idle: return "eye"
+        case .working: return "timer"
+        case .onBreak: return "eye"
+        case .paused:
+            return meetingDetector.isInMeeting ? "video.fill" : "pause.circle"
+        }
+    }
+
     var menuBarText: String {
         switch state {
         case .idle:
@@ -47,9 +57,9 @@ class TimerManager: ObservableObject {
             return "Break \(formatTime(remainingSeconds))"
         case .paused:
             if meetingDetector.isInMeeting {
-                return "In Meeting"
+                return "Meeting \(formatTime(secondsBeforePause))"
             }
-            return "Paused"
+            return "Paused \(formatTime(secondsBeforePause))"
         }
     }
 
@@ -76,6 +86,8 @@ class TimerManager: ObservableObject {
             "breakDurationSeconds": 20,
             "smartPauseEnabled": true,
         ])
+        // Start timer immediately on launch
+        start()
     }
 
     func start() {

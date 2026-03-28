@@ -36,32 +36,27 @@ struct MenuBarView: View {
 
             // Controls
             HStack {
-                if timerManager.state == .idle {
-                    Button("Start") {
-                        timerManager.start()
-                    }
-                    .keyboardShortcut(.defaultAction)
-                } else {
-                    Button(timerManager.state == .paused ? "Resume" : "Pause") {
-                        timerManager.togglePause()
-                    }
-                    .disabled(timerManager.state == .onBreak ||
-                              (timerManager.state == .paused && timerManager.meetingDetector.isInMeeting))
+                Button(timerManager.state == .paused ? "Resume" : "Pause") {
+                    timerManager.togglePause()
+                }
+                .disabled(timerManager.state == .onBreak || timerManager.state == .idle ||
+                          (timerManager.state == .paused && timerManager.meetingDetector.isInMeeting))
 
-                    Button("Stop") {
-                        timerManager.stop()
-                    }
+                Button("Restart") {
+                    timerManager.start()
                 }
 
                 Spacer()
 
-                Button("Settings") {
-                    if #available(macOS 14.0, *) {
-                        NSApp.activate()
-                    } else {
-                        NSApp.activate(ignoringOtherApps: true)
+                if #available(macOS 14.0, *) {
+                    SettingsLink {
+                        Text("Settings")
                     }
-                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                } else {
+                    Button("Settings") {
+                        NSApp.activate(ignoringOtherApps: true)
+                        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                    }
                 }
             }
 

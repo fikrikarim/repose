@@ -9,7 +9,10 @@ struct BreakerApp: App {
             MenuBarView(timerManager: timerManager)
                 .frame(width: 280)
         } label: {
-            Label(timerManager.menuBarText, systemImage: "eye")
+            HStack(spacing: 4) {
+                Image(systemName: timerManager.menuBarIcon)
+                Text(timerManager.menuBarText)
+            }
         }
         .menuBarExtraStyle(.window)
 
