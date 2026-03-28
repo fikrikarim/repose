@@ -5,7 +5,7 @@ import AppKit
 
 let src = NSImage(contentsOfFile: CommandLine.arguments[1])!
 let srcSize = src.size
-let paddingRight: CGFloat = 200
+let paddingRight: CGFloat = 100
 let paddingBottom: CGFloat = 100
 let newSize = NSSize(width: srcSize.width + paddingRight, height: srcSize.height + paddingBottom)
 
