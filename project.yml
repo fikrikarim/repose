@@ -6,12 +6,19 @@ options:
   xcodeVersion: "15.0"
   minimumXcodeGenVersion: "2.0"
 
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.9.0"
+
 targets:
   Repose:
     type: application
     platform: macOS
     sources:
       - Repose
+    dependencies:
+      - package: Sparkle
     settings:
       base:
         INFOPLIST_FILE: Repose/Info.plist

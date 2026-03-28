@@ -20,5 +20,11 @@
     <string>$(EXECUTABLE_NAME)</string>
     <key>LSMinimumSystemVersion</key>
     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+    <key>SUFeedURL</key>
+    <string>https://fikrikarim.github.io/repose/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>z1c91nd36sQoFUOFXEZFH7w6v4NtzqdXwoaL0CytG3M=</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
 </dict>
 </plist>

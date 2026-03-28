@@ -1,11 +1,13 @@
 import AppKit
 import ServiceManagement
+import Sparkle
 import SwiftUI
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     private var timerManager: TimerManager!
+    private var updaterController: SPUStandardUpdaterController!
     private var statusBarTimer: Timer?
     private var menuIsOpen = false
 
@@ -23,6 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         timerManager = TimerManager()
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.button?.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Repose")
@@ -94,6 +97,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         launchAtLoginMenuItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         launchAtLoginMenuItem.target = self
         menu.addItem(launchAtLoginMenuItem)
+
+        menu.addItem(.separator())
+
+        let updateItem = NSMenuItem(title: "Check for Updates…", action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)), keyEquivalent: "")
+        updateItem.target = updaterController
+        menu.addItem(updateItem)
 
         menu.addItem(.separator())
 
