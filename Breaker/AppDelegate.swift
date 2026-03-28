@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var allowSkipMenuItem: NSMenuItem!
     private var launchAtLoginMenuItem: NSMenuItem!
 
-    private let workIntervalOptions = [5, 10, 15, 20, 30, 45, 60]
+    private let workIntervalOptions = [1, 5, 10, 15, 20, 30, 45, 60]
     private let breakDurationOptions = [10, 20, 30, 60, 120, 300]
 
     func applicationDidFinishLaunching(_ notification: Notification) {
