@@ -14,7 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var pauseResumeMenuItem: NSMenuItem!
     private var workIntervalMenu: NSMenu!
     private var breakDurationMenu: NSMenu!
-    private var smartPauseMenuItem: NSMenuItem!
+    private var pauseDuringMeetingsMenuItem: NSMenuItem!
     private var allowSkipMenuItem: NSMenuItem!
     private var launchAtLoginMenuItem: NSMenuItem!
 
@@ -83,9 +83,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
 
         // Toggles
-        smartPauseMenuItem = NSMenuItem(title: "Pause During Meetings", action: #selector(toggleSmartPause), keyEquivalent: "")
-        smartPauseMenuItem.target = self
-        menu.addItem(smartPauseMenuItem)
+        pauseDuringMeetingsMenuItem = NSMenuItem(title: "Pause During Meetings", action: #selector(togglePauseDuringMeetings), keyEquivalent: "")
+        pauseDuringMeetingsMenuItem.target = self
+        menu.addItem(pauseDuringMeetingsMenuItem)
 
         allowSkipMenuItem = NSMenuItem(title: "Allow Skip Break", action: #selector(toggleAllowSkip), keyEquivalent: "")
         allowSkipMenuItem.target = self
@@ -166,7 +166,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         // Toggle states
-        smartPauseMenuItem.state = UserDefaults.standard.bool(forKey: "smartPauseEnabled") ? .on : .off
+        pauseDuringMeetingsMenuItem.state = UserDefaults.standard.bool(forKey: "pauseDuringMeetings") ? .on : .off
         allowSkipMenuItem.state = UserDefaults.standard.bool(forKey: "allowSkipBreak") ? .on : .off
         launchAtLoginMenuItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
     }
@@ -222,9 +222,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         UserDefaults.standard.set(sender.tag, forKey: "breakDurationSeconds")
     }
 
-    @objc private func toggleSmartPause() {
-        let current = UserDefaults.standard.bool(forKey: "smartPauseEnabled")
-        UserDefaults.standard.set(!current, forKey: "smartPauseEnabled")
+    @objc private func togglePauseDuringMeetings() {
+        let current = UserDefaults.standard.bool(forKey: "pauseDuringMeetings")
+        UserDefaults.standard.set(!current, forKey: "pauseDuringMeetings")
     }
 
     @objc private func toggleAllowSkip() {

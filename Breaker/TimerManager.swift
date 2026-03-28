@@ -33,8 +33,8 @@ class TimerManager: ObservableObject {
         return val.clamped(to: 5...300)
     }
 
-    var smartPauseEnabled: Bool {
-        UserDefaults.standard.bool(forKey: "smartPauseEnabled")
+    var pauseDuringMeetings: Bool {
+        UserDefaults.standard.bool(forKey: "pauseDuringMeetings")
     }
 
     var menuBarIcon: String {
@@ -84,7 +84,7 @@ class TimerManager: ObservableObject {
         UserDefaults.standard.register(defaults: [
             "workDurationMinutes": 20,
             "breakDurationSeconds": 20,
-            "smartPauseEnabled": true,
+            "pauseDuringMeetings": true,
             "allowSkipBreak": true,
         ])
         // Start timer immediately on launch
@@ -158,7 +158,7 @@ class TimerManager: ObservableObject {
         tickCount += 1
 
         // Check for meetings every 10 seconds
-        if smartPauseEnabled && tickCount % 10 == 0 {
+        if pauseDuringMeetings && tickCount % 10 == 0 {
             checkMeetingStatus()
         }
 
