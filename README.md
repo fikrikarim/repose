@@ -8,12 +8,10 @@ Break reminder for macOS that lives in your menu bar.
 
 <br><br>
 
-<p>
-  <img src="assets/break-overlay.png" width="600" alt="Repose break screen">
-</p>
-<p>
-  <img src="assets/menu.png" width="300" alt="Repose menu">
-</p>
+<a href="https://github.com/fikrikarim/repose/releases/latest">
+  <p><img src="assets/break-overlay.png" width="600" alt="Repose break screen"></p>
+  <p><img src="assets/menu.png" width="300" alt="Repose menu"></p>
+</a>
 
 You set a work interval and a break duration. Repose counts down in the menu bar, and when it hits zero, your screen goes dark and tells you to look away. When the break's over, the cycle starts again.
 
