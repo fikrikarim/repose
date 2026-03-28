@@ -1,12 +1,14 @@
-# Repose
+<img src="assets/icon.png" width="148" alt="Repose icon" align="left"/>
 
-Break reminder for macOS that lives in your menu bar.
-
+<div>
+<h1>Repose</h1>
+<p>Break reminder for macOS that lives in your menu bar.</p>
 <a href="https://github.com/fikrikarim/repose/releases/latest">
   <img src="assets/download-button.svg" alt="Download for Mac">
 </a>
+</div>
 
-<br><br>
+<br clear="all"/>
 
 <a href="https://github.com/fikrikarim/repose/releases/latest">
   <p><img src="assets/break-overlay.png" alt="Repose break screen"></p>
