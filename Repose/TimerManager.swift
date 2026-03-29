@@ -186,9 +186,11 @@ class TimerManager: ObservableObject {
         remainingSeconds = breakDurationSeconds
         state = .onBreak
         overlayManager.showBreakOverlay(timerManager: self)
+        NSSound(named: "Glass")?.play()
     }
 
     private func endBreak() {
+        NSSound(named: "Blow")?.play()
         overlayManager.dismissOverlay()
         remainingSeconds = workDurationSeconds
         state = .working
