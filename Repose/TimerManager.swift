@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import AppKit
 import CoreGraphics
-import IOKit
+import IOKit.pwr_mgt
 
 enum TimerState {
     case working
@@ -263,7 +263,8 @@ class TimerManager: ObservableObject {
     private let idleThreshold: TimeInterval = 300 // 5 minutes
 
     private func checkIdleStatus() {
-        let idleTime = CGEventSource.secondsSinceLastEventType(.combinedSessionState)
+        // kCGAnyInputEventType (~0) checks all input event types
+        let idleTime = CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: CGEventType(rawValue: ~0)!)
 
         if idleTime >= idleThreshold && !hasActiveDisplaySleepAssertion() {
             if state == .working {
