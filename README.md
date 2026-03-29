@@ -11,7 +11,7 @@
 <br/>
 
 <div align="center">
-  <img src="assets/break-overlay.png" alt="Repose break screen" width="720"/>
+  <img src="assets/break-overlay.png" alt="Repose break screen" width="480"/>
 </div>
 
 <br/>
