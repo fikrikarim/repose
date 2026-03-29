@@ -159,7 +159,7 @@ gh release create "$TAG" \
     --repo "$GITHUB_REPO" \
     --title "$APP_NAME $VERSION" \
     --generate-notes \
-    "$DMG_PATH#$APP_NAME-$VERSION.dmg" \
+    "$DMG_PATH#$APP_NAME.dmg" \
     "$ZIP_PATH#$APP_NAME-$VERSION.zip"
 
 echo ""

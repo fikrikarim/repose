@@ -2,7 +2,7 @@
   <img src="assets/icon.png" width="128" height="128" alt="Repose icon"/>
   <h1>Repose</h1>
   <p><strong>Take breaks from your screen. Without interrupting your meetings.</strong></p>
-  <a href="https://github.com/fikrikarim/repose/releases/latest">
+  <a href="https://github.com/fikrikarim/repose/releases/latest/download/Repose.dmg">
     <img src="assets/download-button.svg" alt="Download for Mac">
   </a>
   <p><sub>Free and open source. Requires macOS 13+.</sub></p>
@@ -45,7 +45,7 @@ This means it works with Zoom, Meet, FaceTime, Teams, Slack huddles, and whateve
 
 ### Download
 
-Grab the latest release from the [releases page](https://github.com/fikrikarim/repose/releases/latest). Unzip and drag to Applications.
+[Download the latest DMG](https://github.com/fikrikarim/repose/releases/latest/download/Repose.dmg), open it, and drag Repose to Applications.
 
 Updates are handled automatically via Sparkle.
 
