@@ -23,9 +23,36 @@ DMG_PATH="$BUILD_DIR/$APP_NAME.dmg"
 ZIP_PATH="$BUILD_DIR/$APP_NAME.zip"
 APPCAST_DIR="$ROOT_DIR/docs"
 
-VERSION=$(grep 'MARKETING_VERSION' "$ROOT_DIR/project.yml" | head -1 | sed 's/.*: *"\(.*\)"/\1/')
+# ─── Version bump ────────────────────────────────────────────────
+VERSION="${1:?Usage: release.sh <version> (e.g. 1.1.0)}"
 
-echo "==> Building $APP_NAME v$VERSION"
+# Validate semver format
+if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Error: Version must be semver (e.g. 1.1.0)"
+    exit 1
+fi
+
+CURRENT_VERSION=$(grep 'MARKETING_VERSION' "$ROOT_DIR/project.yml" | head -1 | sed 's/.*: *"\(.*\)"/\1/')
+if [ "$VERSION" = "$CURRENT_VERSION" ]; then
+    echo "Error: Version $VERSION is already the current version"
+    exit 1
+fi
+
+# Update version in project.yml
+sed -i '' "s/MARKETING_VERSION: \".*\"/MARKETING_VERSION: \"$VERSION\"/" "$ROOT_DIR/project.yml"
+
+# Bump build number
+CURRENT_BUILD=$(grep 'CURRENT_PROJECT_VERSION' "$ROOT_DIR/project.yml" | head -1 | sed 's/.*: *"\(.*\)"/\1/')
+NEW_BUILD=$((CURRENT_BUILD + 1))
+sed -i '' "s/CURRENT_PROJECT_VERSION: \".*\"/CURRENT_PROJECT_VERSION: \"$NEW_BUILD\"/" "$ROOT_DIR/project.yml"
+
+# Regenerate Xcode project and commit version bump
+cd "$ROOT_DIR"
+xcodegen generate
+git add project.yml Repose.xcodeproj
+git commit -m "Bump version to $VERSION (build $NEW_BUILD)"
+
+echo "==> Building $APP_NAME v$VERSION (build $NEW_BUILD)"
 echo ""
 
 # ─── Locate Sparkle tools ────────────────────────────────────────
