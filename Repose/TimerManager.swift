@@ -187,8 +187,8 @@ class TimerManager: ObservableObject {
     private func tick() {
         tickCount += 1
 
-        // Check for meetings and idle every 10 seconds
-        if tickCount % 10 == 0 {
+        // Check for meetings and idle every 5 seconds
+        if tickCount % 5 == 0 {
             if pauseDuringMeetings { checkMeetingStatus() }
             if pauseWhenIdle { checkIdleStatus() }
         }
