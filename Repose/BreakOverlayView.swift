@@ -96,16 +96,16 @@ struct BreakOverlayView: View {
                     // Skip button
                     if allowSkipBreak {
                         Button(action: { timerManager.skipBreak() }) {
-                            HStack(spacing: 6) {
+                            HStack(spacing: 10) {
                                 Text("Skip")
-                                    .font(.system(size: 14, weight: .medium))
+                                    .font(.system(size: 15, weight: .medium))
                                     .foregroundStyle(.white.opacity(0.5))
                                 Text("esc")
                                     .font(.system(size: 11, weight: .medium, design: .rounded))
                                     .foregroundStyle(.white.opacity(0.25))
                             }
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, 28)
+                            .padding(.vertical, 10)
                             .background(.white.opacity(0.08), in: Capsule())
                             .overlay(Capsule().stroke(.white.opacity(0.1), lineWidth: 0.5))
                         }
