@@ -89,6 +89,30 @@ class TimerManager: ObservableObject {
         ])
         // Start timer immediately on launch
         start()
+
+        // Reset work timer on wake — sleep time isn't work time
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.handleWake()
+            }
+        }
+    }
+
+    private func handleWake() {
+        switch state {
+        case .working:
+            remainingSeconds = workDurationSeconds
+        case .onBreak:
+            overlayManager.dismissOverlay()
+            remainingSeconds = workDurationSeconds
+            state = .working
+        case .idle, .paused:
+            break
+        }
     }
 
     func start() {
