@@ -43,6 +43,10 @@ class TimerManager: ObservableObject {
         UserDefaults.standard.bool(forKey: "pauseDuringMeetings")
     }
 
+    var muteSounds: Bool {
+        UserDefaults.standard.bool(forKey: "muteSounds")
+    }
+
     var menuBarText: String {
         switch state {
         case .working:
@@ -84,6 +88,7 @@ class TimerManager: ObservableObject {
             "breakDurationSeconds": 20,
             "pauseDuringMeetings": true,
             "allowSkipBreak": true,
+            "muteSounds": false,
         ])
         // Start timer immediately on launch
         start()
@@ -212,11 +217,11 @@ class TimerManager: ObservableObject {
         remainingSeconds = breakDurationSeconds
         state = .onBreak
         overlayManager.showBreakOverlay(timerManager: self)
-        NSSound(named: "Glass")?.play()
+        if !muteSounds { NSSound(named: "Glass")?.play() }
     }
 
     private func endBreak() {
-        NSSound(named: "Blow")?.play()
+        if !muteSounds { NSSound(named: "Blow")?.play() }
         overlayManager.dismissWithAnimation()
         remainingSeconds = workDurationSeconds
         state = .working

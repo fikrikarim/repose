@@ -18,10 +18,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var breakDurationMenu: NSMenu!
     private var pauseDuringMeetingsMenuItem: NSMenuItem!
     private var allowSkipMenuItem: NSMenuItem!
+    private var muteSoundsMenuItem: NSMenuItem!
     private var launchAtLoginMenuItem: NSMenuItem!
 
-    private let workIntervalOptions = [1, 5, 10, 15, 20, 30, 45, 60]
+    #if DEBUG
+    private let workIntervalOptions = [1, 5, 10, 15, 20, 25, 30, 45, 60]
     private let breakDurationOptions = [10, 20, 30, 60, 120, 300]
+    #else
+    private let workIntervalOptions = [5, 10, 15, 20, 25, 30, 45, 60]
+    private let breakDurationOptions = [20, 30, 60, 120, 300]
+    #endif
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         timerManager = TimerManager()
@@ -93,6 +99,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         allowSkipMenuItem = NSMenuItem(title: "Allow Skip Break", action: #selector(toggleAllowSkip), keyEquivalent: "")
         allowSkipMenuItem.target = self
         menu.addItem(allowSkipMenuItem)
+
+        muteSoundsMenuItem = NSMenuItem(title: "Mute Sounds", action: #selector(toggleMuteSounds), keyEquivalent: "")
+        muteSoundsMenuItem.target = self
+        menu.addItem(muteSoundsMenuItem)
+
+        menu.addItem(.separator())
 
         launchAtLoginMenuItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         launchAtLoginMenuItem.target = self
@@ -175,6 +187,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Toggle states
         pauseDuringMeetingsMenuItem.state = UserDefaults.standard.bool(forKey: "pauseDuringMeetings") ? .on : .off
         allowSkipMenuItem.state = UserDefaults.standard.bool(forKey: "allowSkipBreak") ? .on : .off
+        muteSoundsMenuItem.state = UserDefaults.standard.bool(forKey: "muteSounds") ? .on : .off
         launchAtLoginMenuItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
     }
 
@@ -243,6 +256,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func toggleAllowSkip() {
         let current = UserDefaults.standard.bool(forKey: "allowSkipBreak")
         UserDefaults.standard.set(!current, forKey: "allowSkipBreak")
+    }
+
+    @objc private func toggleMuteSounds() {
+        let current = UserDefaults.standard.bool(forKey: "muteSounds")
+        UserDefaults.standard.set(!current, forKey: "muteSounds")
     }
 
     @objc private func toggleLaunchAtLogin() {
