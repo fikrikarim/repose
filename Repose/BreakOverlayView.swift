@@ -80,13 +80,13 @@ struct BreakOverlayView: View {
                     }
 
                     VStack(spacing: 10) {
-                        Text("Take a Break")
+                        Text("Time to Rest")
                             .font(.system(size: 38, weight: .medium, design: .rounded))
                             .foregroundStyle(.white)
                             .opacity(appeared ? 1 : 0)
                             .offset(y: appeared ? 0 : 10)
 
-                        Text("Look away from the screen and rest your eyes")
+                        Text("Look away from the screen, stretch, and re-pose")
                             .font(.system(size: 16, weight: .regular))
                             .foregroundStyle(.white.opacity(0.4))
                             .opacity(appeared ? 1 : 0)
