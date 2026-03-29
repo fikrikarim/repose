@@ -8,6 +8,12 @@ enum TimerState {
     case paused
 }
 
+enum PauseReason {
+    case manual
+    case meeting
+    case idle
+}
+
 @MainActor
 class TimerManager: ObservableObject {
     @Published var state: TimerState = .working
@@ -16,7 +22,7 @@ class TimerManager: ObservableObject {
     private var timerCancellable: AnyCancellable?
     private var tickCount: Int = 0
     private var secondsBeforePause: Int = 0
-    private var pausedByMeeting = false
+    private var pauseReason: PauseReason = .manual
 
     let meetingDetector = MeetingDetector()
     let overlayManager = OverlayManager()
@@ -44,11 +50,31 @@ class TimerManager: ObservableObject {
         case .onBreak:
             return "Break \(formatTime(remainingSeconds))"
         case .paused:
-            if meetingDetector.isInMeeting {
+            switch pauseReason {
+            case .meeting:
                 return "Meeting \(formatTime(secondsBeforePause))"
+            case .idle:
+                return "Idle"
+            case .manual:
+                return "Paused \(formatTime(secondsBeforePause))"
             }
-            return "Paused \(formatTime(secondsBeforePause))"
         }
+    }
+
+    var pauseStatusText: String? {
+        guard state == .paused else { return nil }
+        switch pauseReason {
+        case .meeting:
+            return meetingDetector.meetingSource.map { "Paused — \($0)" } ?? "Paused — Meeting"
+        case .idle:
+            return "Paused — Idle"
+        case .manual:
+            return "Paused"
+        }
+    }
+
+    var currentPauseReason: PauseReason? {
+        state == .paused ? pauseReason : nil
     }
 
     init() {
@@ -97,14 +123,14 @@ class TimerManager: ObservableObject {
         guard state == .working else { return }
         secondsBeforePause = remainingSeconds
         state = .paused
-        pausedByMeeting = false
+        pauseReason = .manual
     }
 
     func resume() {
         guard state == .paused else { return }
         remainingSeconds = secondsBeforePause
         state = .working
-        pausedByMeeting = false
+        pauseReason = .manual
     }
 
     func skipBreak() {
@@ -116,7 +142,7 @@ class TimerManager: ObservableObject {
     func togglePause() {
         if state == .working {
             pause()
-        } else if state == .paused && !meetingDetector.isInMeeting {
+        } else if state == .paused && pauseReason != .meeting {
             resume()
         }
     }
@@ -178,7 +204,7 @@ class TimerManager: ObservableObject {
             if meetingDetector.isInMeeting {
                 secondsBeforePause = workDurationSeconds
                 state = .paused
-                pausedByMeeting = true
+                pauseReason = .meeting
                 return
             }
         }
@@ -203,16 +229,16 @@ class TimerManager: ObservableObject {
             if state == .working {
                 secondsBeforePause = remainingSeconds
                 state = .paused
-                pausedByMeeting = true
+                pauseReason = .meeting
             } else if state == .onBreak {
                 // If a meeting starts during a break, skip the break
                 skipBreak()
                 secondsBeforePause = remainingSeconds
                 state = .paused
-                pausedByMeeting = true
+                pauseReason = .meeting
             }
         } else {
-            if state == .paused && pausedByMeeting {
+            if state == .paused && pauseReason == .meeting {
                 // Meeting ended, resume
                 resume()
             }

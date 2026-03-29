@@ -139,11 +139,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         case .onBreak:
             statusMenuItem.title = "On a break"
         case .paused:
-            if let source = timerManager.meetingDetector.meetingSource {
-                statusMenuItem.title = "Paused — \(source)"
-            } else {
-                statusMenuItem.title = "Paused"
-            }
+            statusMenuItem.title = timerManager.pauseStatusText ?? "Paused"
         }
     }
 
@@ -158,7 +154,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             pauseResumeMenuItem.isHidden = false
         case .paused:
             pauseResumeMenuItem.title = "Resume Timer"
-            pauseResumeMenuItem.isEnabled = !timerManager.meetingDetector.isInMeeting
+            pauseResumeMenuItem.isEnabled = timerManager.currentPauseReason != .meeting
             pauseResumeMenuItem.isHidden = false
         default:
             pauseResumeMenuItem.isHidden = true
@@ -207,7 +203,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         case .working: icon = "timer"
         case .onBreak: icon = "cup.and.saucer.fill"
         case .paused:
-            icon = timerManager.meetingDetector.isInMeeting ? "video.fill" : "pause.circle"
+            switch timerManager.currentPauseReason {
+            case .meeting: icon = "video.fill"
+            case .idle: icon = "moon.zzz"
+            default: icon = "pause.circle"
+            }
         }
 
         statusItem.button?.image = NSImage(systemSymbolName: icon, accessibilityDescription: nil)
