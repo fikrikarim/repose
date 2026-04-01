@@ -23,11 +23,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var launchAtLoginMenuItem: NSMenuItem!
 
     #if DEBUG
-    private let workIntervalOptions = [1, 5, 10, 15, 20, 25, 30, 45, 60]
-    private let breakDurationOptions = [10, 20, 30, 60, 120, 300]
+    private let workIntervalOptions = [1, 5, 10, 15, 20, 25, 30, 45, 60, 90]
+    private let breakDurationOptions = [10, 20, 30, 60, 120, 300, 600]
     #else
-    private let workIntervalOptions = [5, 10, 15, 20, 25, 30, 45, 60]
-    private let breakDurationOptions = [20, 30, 60, 120, 300]
+    private let workIntervalOptions = [5, 10, 15, 20, 25, 30, 45, 60, 90]
+    private let breakDurationOptions = [20, 30, 60, 120, 300, 600]
     #endif
 
     func applicationDidFinishLaunching(_ notification: Notification) {
