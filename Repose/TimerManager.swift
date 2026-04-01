@@ -14,6 +14,7 @@ enum PauseReason {
     case manual
     case meeting
     case idle
+    case breakPending  // Work timer expired during meeting, waiting for meeting to end
 }
 
 enum SettingsKey {
@@ -37,6 +38,7 @@ class TimerManager: ObservableObject {
 
     let meetingDetector = MeetingDetector()
     let overlayManager = OverlayManager()
+    private let postMeetingBreakDelay = 5
 
     // Activity to prevent App Nap
     private var activity: NSObjectProtocol?
@@ -72,6 +74,8 @@ class TimerManager: ObservableObject {
             switch pauseReason {
             case .meeting:
                 return "Meeting \(formatTime(secondsBeforePause))"
+            case .breakPending:
+                return "Meeting"
             case .idle:
                 return "Idle"
             case .manual:
@@ -85,6 +89,8 @@ class TimerManager: ObservableObject {
         switch pauseReason {
         case .meeting:
             return meetingDetector.meetingSource.map { "Paused — \($0)" } ?? "Paused — Meeting"
+        case .breakPending:
+            return meetingDetector.meetingSource.map { "\($0) — Break pending" } ?? "In meeting — Break pending"
         case .idle:
             return "Paused — Idle"
         case .manual:
@@ -95,6 +101,10 @@ class TimerManager: ObservableObject {
     var currentPauseReason: PauseReason? {
         state == .paused ? pauseReason : nil
     }
+
+    var isInMeeting: Bool {                                                                                                                             
+        meetingDetector.isInMeeting                                                                                                                     
+    } 
 
     init() {
         // Register defaults
@@ -164,7 +174,7 @@ class TimerManager: ObservableObject {
     func togglePause() {
         if state == .working {
             pause()
-        } else if state == .paused && pauseReason != .meeting {
+        } else if state == .paused && pauseReason != .meeting && pauseReason != .breakPending {
             resume()
         }
     }
@@ -216,9 +226,9 @@ class TimerManager: ObservableObject {
         if pauseDuringMeetings {
             meetingDetector.check()
             if meetingDetector.isInMeeting {
-                secondsBeforePause = workDurationSeconds
+                secondsBeforePause = 0
                 state = .paused
-                pauseReason = .meeting
+                pauseReason = .breakPending
                 return
             }
         }
@@ -240,11 +250,8 @@ class TimerManager: ObservableObject {
         meetingDetector.check()
 
         if meetingDetector.isInMeeting {
-            if state == .working {
-                secondsBeforePause = remainingSeconds
-                state = .paused
-                pauseReason = .meeting
-            } else if state == .onBreak {
+            // Timer keeps running during meetings when working — no pause
+            if state == .onBreak {
                 // If a meeting starts during a break, skip the break
                 skipBreak()
                 secondsBeforePause = remainingSeconds
@@ -252,8 +259,12 @@ class TimerManager: ObservableObject {
                 pauseReason = .meeting
             }
         } else {
-            if state == .paused && pauseReason == .meeting {
-                // Meeting ended, resume
+            if state == .paused && pauseReason == .breakPending {
+                // Meeting ended with break pending — short countdown then break
+                remainingSeconds = postMeetingBreakDelay
+                state = .working
+            } else if state == .paused && pauseReason == .meeting {
+                // Meeting ended (break was skipped), resume
                 resume()
             }
         }
