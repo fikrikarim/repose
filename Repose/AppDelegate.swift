@@ -156,7 +156,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func updateStatusText() {
         switch timerManager.state {
         case .working:
-            statusMenuItem.title = "Next break in \(formatTime(timerManager.remainingSeconds))"
+            if timerManager.isInMeeting {
+                statusMenuItem.title = "In meeting"
+            } else {
+                statusMenuItem.title = "Next break in \(formatTime(timerManager.remainingSeconds))"
+            }
         case .onBreak:
             statusMenuItem.title = "On a break"
         case .paused:
@@ -175,7 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             pauseResumeMenuItem.isHidden = false
         case .paused:
             pauseResumeMenuItem.title = "Resume Timer"
-            pauseResumeMenuItem.isEnabled = timerManager.currentPauseReason != .meeting
+            pauseResumeMenuItem.isEnabled = timerManager.currentPauseReason != .meeting && timerManager.currentPauseReason != .breakPending
             pauseResumeMenuItem.isHidden = false
         default:
             pauseResumeMenuItem.isHidden = true
@@ -223,11 +227,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func updateStatusBarTitle() {
         let icon: String
         switch timerManager.state {
-        case .working: icon = "timer"
+        case .working: icon = timerManager.isInMeeting ? "video.fill" : "timer"
         case .onBreak: icon = "cup.and.saucer.fill"
         case .paused:
             switch timerManager.currentPauseReason {
-            case .meeting: icon = "video.fill"
+            case .meeting, .breakPending: icon = "video.fill"
             case .idle: icon = "moon.zzz"
             default: icon = "pause.circle"
             }
