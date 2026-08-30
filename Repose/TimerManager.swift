@@ -23,6 +23,7 @@ enum SettingsKey {
     static let allowSkipBreak = "allowSkipBreak"
     static let muteSounds = "muteSounds"
     static let pauseWhenIdle = "pauseWhenIdle"
+    static let hideMenuBarTimer = "hideMenuBarTimer"
 }
 
 @MainActor

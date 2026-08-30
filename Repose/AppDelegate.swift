@@ -20,6 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var allowSkipMenuItem: NSMenuItem!
     private var pauseWhenIdleMenuItem: NSMenuItem!
     private var muteSoundsMenuItem: NSMenuItem!
+    private var hideMenuBarTimerMenuItem: NSMenuItem!
     private var launchAtLoginMenuItem: NSMenuItem!
 
     #if DEBUG
@@ -113,6 +114,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         muteSoundsMenuItem.representedObject = SettingsKey.muteSounds
         menu.addItem(muteSoundsMenuItem)
 
+        hideMenuBarTimerMenuItem = NSMenuItem(title: "Hide Timer in Menu Bar", action: #selector(toggleBoolSetting(_:)), keyEquivalent: "")
+        hideMenuBarTimerMenuItem.target = self
+        hideMenuBarTimerMenuItem.representedObject = SettingsKey.hideMenuBarTimer
+        menu.addItem(hideMenuBarTimerMenuItem)
+
         menu.addItem(.separator())
 
         launchAtLoginMenuItem = NSMenuItem(title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
@@ -198,6 +204,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         pauseWhenIdleMenuItem.state = UserDefaults.standard.bool(forKey: SettingsKey.pauseWhenIdle) ? .on : .off
         allowSkipMenuItem.state = UserDefaults.standard.bool(forKey: SettingsKey.allowSkipBreak) ? .on : .off
         muteSoundsMenuItem.state = UserDefaults.standard.bool(forKey: SettingsKey.muteSounds) ? .on : .off
+        hideMenuBarTimerMenuItem.state = UserDefaults.standard.bool(forKey: SettingsKey.hideMenuBarTimer) ? .on : .off
         launchAtLoginMenuItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
     }
 
@@ -234,7 +241,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         statusItem.button?.image = NSImage(systemSymbolName: icon, accessibilityDescription: nil)
-        statusItem.button?.title = " \(timerManager.menuBarText)"
+        if UserDefaults.standard.bool(forKey: SettingsKey.hideMenuBarTimer) {
+            statusItem.button?.title = ""
+        } else {
+            statusItem.button?.title = " \(timerManager.menuBarText)"
+        }
     }
 
     // MARK: - Actions
