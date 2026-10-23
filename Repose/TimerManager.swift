@@ -161,6 +161,35 @@ class TimerManager: ObservableObject {
         state = .working
     }
 
+    /// Start a break immediately, regardless of the current state or meeting status.
+    func takeBreakNow() {
+        guard state != .onBreak else { return }
+        beginBreak()
+    }
+
+    /// Adjust the time remaining before the next break (driven by the menu slider).
+    func setRemainingWork(_ seconds: Int) {
+        let clamped = seconds.clamped(to: 1...workDurationSeconds)
+        switch state {
+        case .working:
+            remainingSeconds = clamped
+        case .paused where pauseReason == .manual:
+            secondsBeforePause = clamped
+        default:
+            break
+        }
+    }
+
+    /// Whether the remaining-work slider can currently be adjusted.
+    var canAdjustRemainingWork: Bool {
+        state == .working || (state == .paused && pauseReason == .manual)
+    }
+
+    /// Time remaining before the next break, as reflected by the slider.
+    var remainingWorkSeconds: Int {
+        (state == .paused) ? secondsBeforePause : remainingSeconds
+    }
+
     func togglePause() {
         if state == .working {
             pause()
@@ -223,6 +252,10 @@ class TimerManager: ObservableObject {
             }
         }
 
+        beginBreak()
+    }
+
+    private func beginBreak() {
         remainingSeconds = breakDurationSeconds
         state = .onBreak
         overlayManager.showBreakOverlay(timerManager: self)

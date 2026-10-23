@@ -13,6 +13,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // Menu items that need updating
     private var statusMenuItem: NSMenuItem!
+    private var remainingSliderItem: NSMenuItem!
+    private var remainingSlider: NSSlider!
+    private var takeBreakMenuItem: NSMenuItem!
     private var pauseResumeMenuItem: NSMenuItem!
     private var workIntervalMenu: NSMenu!
     private var breakDurationMenu: NSMenu!
@@ -53,7 +56,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusMenuItem.isEnabled = false
         menu.addItem(statusMenuItem)
 
+        // Remaining-time slider (adjust time until the next break)
+        remainingSliderItem = makeRemainingSliderItem()
+        menu.addItem(remainingSliderItem)
+
         menu.addItem(.separator())
+
+        // Take a break right now
+        takeBreakMenuItem = NSMenuItem(title: "Take Break Now", action: #selector(takeBreakNow), keyEquivalent: "b")
+        takeBreakMenuItem.target = self
+        menu.addItem(takeBreakMenuItem)
 
         // Pause / Resume
         pauseResumeMenuItem = NSMenuItem(title: "Pause Timer", action: #selector(togglePause), keyEquivalent: "p")
@@ -138,6 +150,39 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem.menu = menu
     }
 
+    private func makeRemainingSliderItem() -> NSMenuItem {
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: 240, height: 48))
+        // Match the horizontal inset of standard menu-item text (past the checkmark column).
+        let textInset: CGFloat = 30
+
+        let label = NSTextField(labelWithString: "Time until break")
+        label.font = .menuFont(ofSize: 0)
+        label.textColor = .secondaryLabelColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(label)
+
+        let slider = NSSlider(value: 0, minValue: 1, maxValue: 60,
+                              target: self, action: #selector(remainingSliderChanged(_:)))
+        slider.isContinuous = true
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(slider)
+        remainingSlider = slider
+
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: textInset),
+            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -14),
+            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 4),
+            slider.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: textInset),
+            slider.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            slider.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 4),
+            slider.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8),
+        ])
+
+        let item = NSMenuItem()
+        item.view = container
+        return item
+    }
+
     // MARK: - NSMenuDelegate — update items right before the menu opens
 
     nonisolated func menuWillOpen(_ menu: NSMenu) {
@@ -164,8 +209,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
+    private func updateRemainingSlider() {
+        let maxSeconds = timerManager.workDurationSeconds
+        let current = timerManager.remainingWorkSeconds.clamped(to: 1...maxSeconds)
+        remainingSlider.maxValue = Double(maxSeconds)
+        remainingSlider.integerValue = current
+        let enabled = timerManager.canAdjustRemainingWork
+        remainingSlider.isEnabled = enabled
+        remainingSliderItem.isHidden = timerManager.state == .onBreak
+    }
+
     private func updateMenuItems() {
         updateStatusText()
+        updateRemainingSlider()
+
+        // Take Break Now — available unless already on a break
+        takeBreakMenuItem.isHidden = timerManager.state == .onBreak
 
         // Pause / Resume
         switch timerManager.state {
@@ -245,6 +304,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func restartTimer() {
         timerManager.start()
+    }
+
+    @objc private func takeBreakNow() {
+        timerManager.takeBreakNow()
+    }
+
+    @objc private func remainingSliderChanged(_ sender: NSSlider) {
+        timerManager.setRemainingWork(sender.integerValue)
+        updateStatusText()
     }
 
     @objc private func setWorkInterval(_ sender: NSMenuItem) {
